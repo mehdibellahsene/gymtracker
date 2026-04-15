@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GymTracker">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <title>Gym Tracker - JamCore DY</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header>
+    <div class="header-top">
+      <div class="logo">GYM<span>TRACKER</span></div>
+      <div class="date-display" id="today-date"></div>
+    </div>
+    <p class="subtitle">Programme JamCore DY</p>
+  </header>
+
+  <!-- ACTIVE WORKOUT BANNER -->
+  <div class="workout-banner" id="workout-banner" style="display:none">
+    <div class="workout-banner-info">
+      <span class="workout-banner-dot"></span>
+      <span id="workout-banner-name">Seance active</span>
+      <span class="workout-banner-time" id="workout-banner-time">00:00</span>
+    </div>
+    <button class="btn-finish-workout" id="btn-finish-workout">Terminer</button>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="stat-sets">0</div>
+      <div class="stat-label">Series</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-volume">0</div>
+      <div class="stat-label">Volume (kg)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-exercises">0</div>
+      <div class="stat-label">Exercices</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-workouts">0</div>
+      <div class="stat-label">Seances</div>
+    </div>
+  </div>
+
+  <!-- REST TIMER -->
+  <div class="rest-timer" id="rest-timer" style="display:none">
+    <div class="timer-ring">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" class="timer-bg"/>
+        <circle cx="50" cy="50" r="45" class="timer-progress" id="timer-circle"/>
+      </svg>
+      <div class="timer-text" id="timer-text">0:00</div>
+    </div>
+    <div class="timer-controls">
+      <button class="timer-btn" onclick="setTimer(60)">1:00</button>
+      <button class="timer-btn" onclick="setTimer(90)">1:30</button>
+      <button class="timer-btn" onclick="setTimer(120)">2:00</button>
+      <button class="timer-btn" onclick="setTimer(180)">3:00</button>
+      <button class="timer-btn timer-stop" onclick="stopTimer()">Stop</button>
+    </div>
+  </div>
+
+  <!-- NAV TABS -->
+  <nav>
+    <button class="tab active" data-session="session1">
+      <span class="tab-icon">I</span>
+      <span class="tab-label">Dos & Biceps</span>
+      <span class="tab-progress" id="progress-session1">0%</span>
+    </button>
+    <button class="tab" data-session="session2">
+      <span class="tab-icon">II</span>
+      <span class="tab-label">Pecs & Triceps</span>
+      <span class="tab-progress" id="progress-session2">0%</span>
+    </button>
+    <button class="tab" data-session="session3">
+      <span class="tab-icon">III</span>
+      <span class="tab-label">Jambes</span>
+      <span class="tab-progress" id="progress-session3">0%</span>
+    </button>
+    <button class="tab" data-session="session4">
+      <span class="tab-icon">IV</span>
+      <span class="tab-label">Epaules & Trap</span>
+      <span class="tab-progress" id="progress-session4">0%</span>
+    </button>
+    <button class="tab tab-history" data-session="history">
+      <span class="tab-icon">H</span>
+      <span class="tab-label">Historique</span>
+    </button>
+  </nav>
+
+  <!-- SESSION 1 -->
+  <section id="session1" class="session active">
+    <div class="session-title">
+      <h2>Session I</h2>
+      <span class="session-badge">Dos & Biceps</span>
+    </div>
+    <div class="workout-start-zone" data-session="session1">
+      <button class="btn-start-workout">Demarrer la seance</button>
+      <div class="past-sessions-preview"></div>
+    </div>
+
+    <h3 class="muscle-group">Dos</h3>
+    <div class="exercise" data-exercise="Soulevés de Terre" data-sets="2" data-reps="5-8" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Soulevés de Terre</strong>
+          <span class="exercise-target">Erecteurs spinaux</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">2x5-8</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Tractions Large" data-sets="4" data-reps="10-12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Tractions Large</strong>
+          <span class="exercise-target">Grand dorsal - Largeur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x10-12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Tirage Haltère 1 Bras" data-sets="4" data-reps="8-12" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Tirage Haltere a un Bras</strong>
+          <span class="exercise-target">Dorsaux - Epaisseur unilaterale</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x8-12</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Tirage Assis Poulie" data-sets="3" data-reps="10-12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Tirage Assis a la Poulie</strong>
+          <span class="exercise-target">Milieu du dos - Densite</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x10-12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Tirage Poitrine Serrée" data-sets="3" data-reps="12-15" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Tirage Poitrine (Prise Serree)</strong>
+          <span class="exercise-target">Grand dorsal inferieur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x12-15</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+
+    <h3 class="muscle-group">Biceps</h3>
+    <div class="exercise" data-exercise="Curls Pupitre EZ" data-sets="3" data-reps="10-12" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Curls Pupitre Barre EZ</strong>
+          <span class="exercise-target">Courte tete - Pic</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x10-12</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Curls Haltères Inclinés" data-sets="3" data-reps="12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Curls Halteres Inclines</strong>
+          <span class="exercise-target">Longue tete - Etirement</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Curls Marteau" data-sets="3" data-reps="10-12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Curls Marteau</strong>
+          <span class="exercise-target">Brachial & brachio-radial</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x10-12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="5-Min Burn Curl Poulie" data-sets="1" data-reps="5min" data-rpe="MAX">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>5-Minute Burn (Curl Poulie)</strong>
+          <span class="exercise-target">Stress metabolique</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">5min</span>
+          <span class="rpe-badge rpe-10">MAX</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+  </section>
+
+  <!-- SESSION 2 -->
+  <section id="session2" class="session">
+    <div class="session-title">
+      <h2>Session II</h2>
+      <span class="session-badge">Pectoraux & Triceps</span>
+    </div>
+    <div class="workout-start-zone" data-session="session2">
+      <button class="btn-start-workout">Demarrer la seance</button>
+      <div class="past-sessions-preview"></div>
+    </div>
+
+    <h3 class="muscle-group">Pectoraux</h3>
+    <div class="exercise" data-exercise="Développé Haltères Incliné" data-sets="4" data-reps="10-12" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Developpe Halteres Incline</strong>
+          <span class="exercise-target">Tete claviculaire</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x10-12</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Développé Couché Barre" data-sets="3" data-reps="8-10" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Developpe Couche Barre Plate</strong>
+          <span class="exercise-target">Tete sternale - Puissance</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x8-10</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Dips" data-sets="3" data-reps="AMAP" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Dips (Poids du Corps)</strong>
+          <span class="exercise-target">Pecs inferieurs + Triceps</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3xAMAP</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Écartés Poulie" data-sets="3" data-reps="12-15" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Ecartes Poulie (Cable Crossovers)</strong>
+          <span class="exercise-target">Adduction - Tension constante</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x12-15</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Presse Pectorale Machine 5min" data-sets="1" data-reps="5min" data-rpe="MAX">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Presse Pectorale Machine</strong>
+          <span class="exercise-target">Metabolites & echec</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">5min</span>
+          <span class="rpe-badge rpe-10">MAX</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+
+    <h3 class="muscle-group">Triceps</h3>
+    <div class="exercise" data-exercise="Skullcrushers EZ" data-sets="3" data-reps="8-12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Skullcrushers Barre EZ</strong>
+          <span class="exercise-target">Longue tete du triceps</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x8-12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Extension Corde Overhead" data-sets="3" data-reps="12-15" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Extension Corde Overhead</strong>
+          <span class="exercise-target">Etirement longue tete</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x12-15</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Extensions Corde Poulie Haute" data-sets="4" data-reps="12-15" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Extensions Corde Poulie Haute</strong>
+          <span class="exercise-target">Tete laterale - Contraction</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x12-15</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="5-Min Burn Triceps Poulie" data-sets="1" data-reps="5min" data-rpe="MAX">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>5-Minute Burn (Poussee Poulie)</strong>
+          <span class="exercise-target">Fatigue totale triceps</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">5min</span>
+          <span class="rpe-badge rpe-10">MAX</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+  </section>
+
+  <!-- SESSION 3 -->
+  <section id="session3" class="session">
+    <div class="session-title">
+      <h2>Session III</h2>
+      <span class="session-badge">Bas du Corps</span>
+    </div>
+    <div class="workout-start-zone" data-session="session3">
+      <button class="btn-start-workout">Demarrer la seance</button>
+      <div class="past-sessions-preview"></div>
+    </div>
+
+    <div class="exercise" data-exercise="Squats Arrière" data-sets="4" data-reps="8-10" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Squats Arriere a la Barre</strong>
+          <span class="exercise-target">Quadriceps, Fessiers</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x8-10</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Presse Cuisses 45°" data-sets="3" data-reps="15-20" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Presse a Cuisses 45 Degres</strong>
+          <span class="exercise-target">Hypertrophie quadriceps</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x15-20</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="SDT Roumains" data-sets="3" data-reps="8-12" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Souleves de Terre Roumains</strong>
+          <span class="exercise-target">Ischio-jambiers & Fessiers</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x8-12</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Extensions Jambes" data-sets="3" data-reps="12-15" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Extensions de Jambes</strong>
+          <span class="exercise-target">Droit femoral - Burn</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x12-15</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Leg Curls" data-sets="3" data-reps="10-12" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Leg Curls</strong>
+          <span class="exercise-target">Ischio-jambiers isolation</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x10-12</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Élévations Mollets" data-sets="4" data-reps="15-20" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Elevations Mollets Debout</strong>
+          <span class="exercise-target">Gastrocnemien</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x15-20</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+  </section>
+
+  <!-- SESSION 4 -->
+  <section id="session4" class="session">
+    <div class="session-title">
+      <h2>Session IV</h2>
+      <span class="session-badge">Epaules & Trapezes</span>
+    </div>
+    <div class="workout-start-zone" data-session="session4">
+      <button class="btn-start-workout">Demarrer la seance</button>
+      <div class="past-sessions-preview"></div>
+    </div>
+
+    <div class="exercise" data-exercise="Développé Barre Assis" data-sets="3" data-reps="6-10" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Developpe Barre Assis</strong>
+          <span class="exercise-target">Deltoide anterieur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x6-10</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Développé Arnold" data-sets="3" data-reps="8-12" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Developpe Arnold Assis</strong>
+          <span class="exercise-target">Deltoides multi-angles</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x8-12</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Élévations Latérales" data-sets="4" data-reps="12-15" data-rpe="10">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Elevations Laterales Halteres</strong>
+          <span class="exercise-target">Deltoide moyen - Largeur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x12-15</span>
+          <span class="rpe-badge rpe-10">RPE 10</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Tirage Facial" data-sets="3" data-reps="15-20" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Tirage Facial / Ecartes Arriere</strong>
+          <span class="exercise-target">Deltoide posterieur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x15-20</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Shrugs Haltères" data-sets="3" data-reps="10-12" data-rpe="8">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Shrugs Halteres</strong>
+          <span class="exercise-target">Trapeze superieur</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">3x10-12</span>
+          <span class="rpe-badge rpe-8">RPE 8</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+    <div class="exercise" data-exercise="Élévations Genoux Abdos" data-sets="4" data-reps="20" data-rpe="9">
+      <div class="exercise-header">
+        <div class="exercise-info">
+          <strong>Elevations de Genoux Abdominaux</strong>
+          <span class="exercise-target">Bas du droit de l'abdomen</span>
+        </div>
+        <div class="exercise-meta">
+          <span class="prescription">4x20</span>
+          <span class="rpe-badge rpe-9">RPE 9</span>
+        </div>
+      </div>
+      <div class="sets-list"></div>
+      <button class="btn-add">+ Serie</button>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="history" class="session">
+    <div class="session-title">
+      <h2>Historique</h2>
+      <button class="btn-clear-history" id="btn-clear-all">Tout effacer</button>
+    </div>
+    <div class="history-filters">
+      <button class="filter-btn active" data-filter="all">Tout</button>
+      <button class="filter-btn" data-filter="session1">Dos/Bi</button>
+      <button class="filter-btn" data-filter="session2">Pecs/Tri</button>
+      <button class="filter-btn" data-filter="session3">Jambes</button>
+      <button class="filter-btn" data-filter="session4">Epaules</button>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

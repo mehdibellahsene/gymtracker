@@ -1,0 +1,89 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS'
+    }
+
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
+        NEXUS_URL = 'http://nexus:8081'
+        NEXUS_REPOSITORY = 'raw-hosted'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
+    }
+
+    stages {
+        stage('Install') {
+            steps {
+                sh 'npm config delete registry 2>/dev/null || true'
+                sh 'npm config delete _auth 2>/dev/null || true'
+                sh 'npm install --registry https://registry.npmjs.org/'
+            }
+        }
+
+        stage('Security Audit') {
+            steps {
+                sh 'npm audit --audit-level=moderate --json > audit-report.json || true'
+                sh 'npm audit --audit-level=moderate || true'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'audit-report.json', allowEmptyArchive: true
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '${SONAR_SCANNER_HOME}/bin/sonar-scanner'
+                }
+            }
+        }
+
+        stage('Build Package') {
+            steps {
+                sh "npm version 1.0.${BUILD_NUMBER} --no-git-tag-version"
+                sh 'npm pack'
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: 'nexus:8081',
+                    groupId: 'com.gymtracker',
+                    version: "1.0.${BUILD_NUMBER}",
+                    repository: "${NEXUS_REPOSITORY}",
+                    credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                    artifacts: [[
+                        artifactId: 'tp1-cicd-app',
+                        classifier: '',
+                        file: "tp1-cicd-app-1.0.${BUILD_NUMBER}.tgz",
+                        type: 'tgz'
+                    ]]
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline terminé avec succès !'
+        }
+        failure {
+            echo 'Pipeline en échec.'
+        }
+    }
+}

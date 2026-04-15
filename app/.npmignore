@@ -1,0 +1,7 @@
+.scannerwork/
+audit-report.json
+coverage/
+*.test.js
+Jenkinsfile
+jest.config.js
+sonar-project.properties

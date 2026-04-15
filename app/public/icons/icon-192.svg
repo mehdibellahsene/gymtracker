@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="40" fill="#0a0a0a"/>
+  <g transform="translate(96,96)">
+    <rect x="-70" y="-8" width="140" height="16" rx="4" fill="#e63946"/>
+    <rect x="-60" y="-24" width="16" height="48" rx="4" fill="#e63946"/>
+    <rect x="44" y="-24" width="16" height="48" rx="4" fill="#e63946"/>
+    <rect x="-76" y="-16" width="12" height="32" rx="3" fill="#ff6b6b"/>
+    <rect x="64" y="-16" width="12" height="32" rx="3" fill="#ff6b6b"/>
+  </g>
+  <text x="96" y="155" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="24" fill="#ffffff">GYM</text>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "name": "tp1-cicd-app",
+  "version": "1.0.0",
+  "description": "Gym Tracker - Programme JamCore DY",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest --coverage",
+    "build": "npm pack"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
