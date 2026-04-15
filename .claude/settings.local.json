@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker exec jenkins:*)",
+      "Bash(docker restart jenkins:*)",
+      "Bash(timeout 60 grep -m 1 \"Jenkins is fully up and running\")",
+      "Bash(timeout 60 bash:*)",
+      "Bash(curl:*)",
+      "Bash(git:*)",
+      "Bash(gh auth:*)"
+    ]
+  }
+}
